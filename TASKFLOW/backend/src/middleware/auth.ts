@@ -3,9 +3,9 @@ import User from "../models/userModel.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret_here";
 
-export async function authMiddleware(req: any, res: any, next: any) {
+export default async function authMiddleware(req: any, res: any, next: any) {
   //GRAB THE BEARER TOKEN FROM AUTHORIZATION HEADER
-  const authHeader = req.header.authorization;
+  const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).json({ message: "Authorization header missing" });
   }
