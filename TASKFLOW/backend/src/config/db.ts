@@ -1,10 +1,15 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const connectDB = async () => {
   try {
-    await mongoose.connect(
-      "mongodb+srv://gilgameshfate069:Gilgamesh@12345@cluster0.3al2prw.mongodb.net/Taskflow"
-    );
+    const url = process.env.MONGODB_URL;
+    if (!url) {
+      throw new Error("MONGODB_URL is not defined in .env file");
+    }
+    await mongoose.connect(url);
 
     console.log("MongoDB connected");
   } catch (err) {
