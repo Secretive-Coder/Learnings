@@ -5,7 +5,6 @@ export const Route = createRootRoute({
   component: () => (
     <>
       <div className="flex gap-2 p-2"></div>
-      <hr />
       <Outlet />
       <TanStackRouterDevtools />
     </>
