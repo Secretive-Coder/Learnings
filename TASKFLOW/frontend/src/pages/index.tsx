@@ -1,4 +1,4 @@
-import Navbar from "@/components/common/navbar";
+import Layout from "@/components/common/layout";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
@@ -8,7 +8,10 @@ export const Route = createFileRoute("/")({
 function RouteComponent() {
   return (
     <div>
-      <Navbar />
+      Welcome to Taskflow!
+      <Layout user={null} onLogout={function (): void {
+        throw new Error("Function not implemented.");
+      } } />
     </div>
   );
 }
