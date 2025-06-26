@@ -26,7 +26,7 @@ const router = createBrowserRouter([
           const { data } = await axios.get(
             `/users?${request.url.split("?")[1] ?? ""}`
           );
-          return data.data;
+          return data;
         },
       },
     ],
