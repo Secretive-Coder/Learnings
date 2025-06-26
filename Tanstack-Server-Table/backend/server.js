@@ -1,7 +1,7 @@
 // index.js
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
 
 const app = express();
 app.use(cors());
@@ -14,8 +14,8 @@ app.use(express.urlencoded({ extended: true }));
 // Connect to the MongoDB database using Mongoose
 
 const connectToDatabase = async () => {
-  await mongoose.connect("mongodb://0.0.0.0:27017/fullstack-tanstack");
-  console.log("database connected");
+  await mongoose.connect('mongodb://0.0.0.0:27017/fullstack-tanstack');
+  console.log('database connected');
 };
 
 connectToDatabase();
@@ -28,23 +28,29 @@ const userSchema = new Schema({
   age: Number,
 });
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model('User', userSchema);
 
-app.get("/", (req, res) => {
-  res.send("Hello, World!");
+app.get('/', (req, res) => {
+  res.send('Hello, World!');
 });
 
-app.get("/users", async (req, res) => {
+app.get('/users', async (req, res) => {
   // console.log(req.query);
   const queryObj = { ...req.query };
 
-  delete queryObj["sort"];
+  delete queryObj['sort'];
 
   let query = User.find(queryObj);
-
+  // console.log(req.query);
   if (req.query.sort) {
-    const [sortField, sortBy] = req.query.sort.split(":");
-    query.sort({ [sortField]: sortBy });
+    query.sort(
+      req.query.sort
+        .split(',')
+        .map((el) => ({ [el.split(':')[0]]: el.split(':')[1] }))
+        .reduce((merged, obj) => {
+          return { ...merged, ...obj };
+        }, {})
+    );
   }
 
   const users = await query;

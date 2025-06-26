@@ -58,13 +58,17 @@ const Users = () => {
 
   React.useEffect(() => {
     if (sorting.length > 0) {
-      const { id, desc } = sorting[0];
-      setSearchParams({ sort: `${id}:${desc ? "desc" : "asc"}` });
-      console.log(id, desc);
+      setSearchParams({
+        sort: sorting
+          .map((e) => `${e.id}:${e.desc ? "desc" : "asc"}`)
+          .join(","),
+      });
     } else {
       setSearchParams(_.omit(Object.fromEntries(searchParams), "sort"));
     }
   }, [sorting, setSearchParams, searchParams]);
+
+  console.log("Sort::", sorting);
 
   return (
     <div>
@@ -82,7 +86,7 @@ const Users = () => {
                       },
                     }}
                     key={header.id}
-                    onClick={header.column.getToggleSortingHandler()}
+                    onClick={() => header.column.toggleSorting(null, true)}
                   >
                     {header.isPlaceholder
                       ? null

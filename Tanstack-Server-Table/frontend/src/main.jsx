@@ -23,7 +23,6 @@ const router = createBrowserRouter([
         index: true,
         element: <Users />,
         loader: async ({ request }) => {
-          console.log("Request::", request);
           const { data } = await axios.get(
             `/users?${request.url.split("?")[1] ?? ""}`
           );
