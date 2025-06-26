@@ -35,26 +35,41 @@ app.get('/', (req, res) => {
 });
 
 app.get('/users', async (req, res) => {
-  // console.log(req.query);
-  const queryObj = { ...req.query };
 
-  delete queryObj['sort'];
+ // Pagination
+  let query = User.find();
+  const totalCount = await User.countDocuments();
+  const page = parseInt(req.query.page, 10) || 1;
+  const limit = parseInt(req.query.limit, 10) || 10;
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+  const total = await User.countDocuments();
 
-  let query = User.find(queryObj);
-  // console.log(req.query);
-  if (req.query.sort) {
-    query.sort(
-      req.query.sort
-        .split(',')
-        .map((el) => ({ [el.split(':')[0]]: el.split(':')[1] }))
-        .reduce((merged, obj) => {
-          return { ...merged, ...obj };
-        }, {})
-    );
+  query = query.skip(startIndex).limit(limit);
+
+  // Pagination result
+  const pagination = {};
+
+  if (endIndex < total) {
+    pagination.next = {
+      page: page + 1,
+      limit,
+    };
   }
 
+  if (startIndex > 0) {
+    pagination.prev = {
+      page: page - 1,
+      limit,
+    };
+  }
   const users = await query;
-  res.status(200).json({ length: users.length, data: users });
+  res.status(200).json({
+    count: users.length,
+    totalCount,
+    pagination,
+    data: users,
+  });
 });
 
 app.listen(PORT, () => {
